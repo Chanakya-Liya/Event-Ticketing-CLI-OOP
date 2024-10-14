@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Scanner;
 
 
@@ -5,11 +6,13 @@ public class Main {
 
     private static final ConfigReader config = new ConfigReader();
 
-    public static void main(String[] args) {
+    public static void main(String[] args){
+
         EventTicketConfig eventTicketConfig = new EventTicketConfig();
         ticketInputValidator(eventTicketConfig);
 
         System.out.println(eventTicketConfig.toString());
+        System.out.println(config.getProperty("LBL016"));
 
     }
 
