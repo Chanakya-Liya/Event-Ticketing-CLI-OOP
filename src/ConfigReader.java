@@ -7,12 +7,12 @@ public class ConfigReader {
     private static final Properties properties = new Properties();
 
     static {
-        try (InputStream inputOne = ConfigReader.class.getClassLoader().getResourceAsStream("Resources/config.properties")) {
-            if (inputOne == null) {
+        try (InputStream input = ConfigReader.class.getClassLoader().getResourceAsStream("Resources/config.properties")) {
+            if (input == null) {
                 System.out.println("Sorry, unable to find config.properties");
             }
             // Load properties from file
-            properties.load(inputOne);
+            properties.load(input);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -23,4 +23,4 @@ public class ConfigReader {
         return properties.getProperty(key);
     }
 
-} 
+}

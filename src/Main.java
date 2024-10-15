@@ -1,3 +1,6 @@
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -10,10 +13,7 @@ public class Main {
 
         EventTicketConfig eventTicketConfig = new EventTicketConfig();
         ticketInputValidator(eventTicketConfig);
-
-        System.out.println(eventTicketConfig.toString());
-        System.out.println(config.getProperty("LBL016"));
-
+        saveData(eventTicketConfig);
     }
 
     public static void ticketInputValidator(EventTicketConfig eventConfig){
@@ -90,4 +90,16 @@ public class Main {
         }
         return Integer.parseInt(userInput);
     }
+
+    public static void saveData(EventTicketConfig eventTicketConfig){
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        try (FileWriter file = new FileWriter("src/Resources/saveFile.json")) {
+            gson.toJson(eventTicketConfig, file);
+            System.out.println("Successfully saved the object as JSON to saveFile.json");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
