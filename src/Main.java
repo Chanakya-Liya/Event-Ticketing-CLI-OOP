@@ -1,7 +1,3 @@
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Scanner;
 
 
@@ -10,22 +6,35 @@ public class Main {
     private static final ConfigReader config = new ConfigReader();
 
     public static void main(String[] args){
-
+        Scanner scan = new Scanner(System.in);
         EventTicketConfig eventTicketConfig = new EventTicketConfig();
-        ticketInputValidator(eventTicketConfig);
-        saveData(eventTicketConfig);
+        System.out.printf("%s: ", config.getLabel("LBL016"));
+        while(true){
+            String userInput = scan.next();
+            if(userInput.equalsIgnoreCase("y")){
+                eventTicketConfig = eventTicketConfig.loadData();
+                break;
+            } else if (userInput.equalsIgnoreCase("n")) {
+                ticketInputValidator(eventTicketConfig);
+                eventTicketConfig.saveData();
+                break;
+            }else{
+                System.out.printf("%s, %s: ", config.getLabel("LBL001"), config.getLabel("LBL017"));
+            }
+        }
+        System.out.println(eventTicketConfig.toString());
     }
 
     public static void ticketInputValidator(EventTicketConfig eventConfig){
         Scanner scanner = new Scanner(System.in);
 
-        System.out.printf("%s : ", config.getProperty("LBL012.Text"));
-        eventConfig.setTotalTickets(getIntInput(Integer.parseInt(config.getProperty("LBL012.Id")), scanner));
-        System.out.printf("%s : ", config.getProperty("LBL013.Text"));
-        eventConfig.setReleaseRate(getIntInput(Integer.parseInt(config.getProperty("LBL013.Id")), scanner));
-        System.out.printf("%s : ", config.getProperty("LBL014.Text"));
-        eventConfig.setRetrievalRate(getIntInput(Integer.parseInt(config.getProperty("LBL014.Id")), scanner));
-        System.out.printf("%s : ", config.getProperty("LBL015.Text"));
+        System.out.printf("%s : ", config.getLabel("LBL012.Text"));
+        eventConfig.setTotalTickets(getIntInput(Integer.parseInt(config.getLabel("LBL012.Id")), scanner));
+        System.out.printf("%s : ", config.getLabel("LBL013.Text"));
+        eventConfig.setReleaseRate(getIntInput(Integer.parseInt(config.getLabel("LBL013.Id")), scanner));
+        System.out.printf("%s : ", config.getLabel("LBL014.Text"));
+        eventConfig.setRetrievalRate(getIntInput(Integer.parseInt(config.getLabel("LBL014.Id")), scanner));
+        System.out.printf("%s : ", config.getLabel("LBL015.Text"));
         eventConfig.setTicketCapacity(getIntInput(scanner, eventConfig.getTotalTickets()));
     }
 
@@ -35,24 +44,24 @@ public class Main {
         boolean flag = true;
         String userInput = null;
         if(id == 1){
-            stringInputErrorMsg = config.getProperty("LBL003");
-            intInputErrorMsg = config.getProperty("LBL004");
+            stringInputErrorMsg = config.getLabel("LBL003");
+            intInputErrorMsg = config.getLabel("LBL004");
         } else if (id == 2) {
-            stringInputErrorMsg = config.getProperty("LBL005");
-            intInputErrorMsg = config.getProperty("LBL006");
+            stringInputErrorMsg = config.getLabel("LBL005");
+            intInputErrorMsg = config.getLabel("LBL006");
         }else{
-            stringInputErrorMsg = config.getProperty("LBL007");
-            intInputErrorMsg = config.getProperty("LBL008");
+            stringInputErrorMsg = config.getLabel("LBL007");
+            intInputErrorMsg = config.getLabel("LBL008");
         }
         while(flag){
             try{
                 userInput = scan.next();
                 if(Integer.parseInt(userInput) <= 0){
-                    System.out.printf("%s, %s : ", config.getProperty("LBL001"), intInputErrorMsg);
+                    System.out.printf("%s, %s : ", config.getLabel("LBL001"), intInputErrorMsg);
                     continue;
                 }
             }catch(Exception e){
-                System.out.printf("%s, %s %s: ", config.getProperty("LBL001"), config.getProperty("LBL002"), stringInputErrorMsg);
+                System.out.printf("%s, %s %s: ", config.getLabel("LBL001"), config.getLabel("LBL002"), stringInputErrorMsg);
                 continue;
             }
             flag = false;
@@ -67,38 +76,28 @@ public class Main {
         boolean flag = true;
         String userInput = null;
 
-        stringInputErrorMsg = config.getProperty("LBL009");
-        intInputErrorMsg = config.getProperty("LBL010");
-        intLowerValueErrorMsg = config.getProperty("LBL011");
+        stringInputErrorMsg = config.getLabel("LBL009");
+        intInputErrorMsg = config.getLabel("LBL010");
+        intLowerValueErrorMsg = config.getLabel("LBL011");
 
         while (flag) {
             try {
                 userInput = scan.next();
                 if (Integer.parseInt(userInput) <= 0) {
-                    System.out.printf("%s, %s : ", config.getProperty("LBL001"), intInputErrorMsg);
+                    System.out.printf("%s, %s : ", config.getLabel("LBL001"), intInputErrorMsg);
                     continue;
                 }
                 if (Integer.parseInt(userInput) > capacity) {
-                    System.out.printf("%s, %s : ", config.getProperty("LBL001"), intLowerValueErrorMsg);
+                    System.out.printf("%s, %s : ", config.getLabel("LBL001"), intLowerValueErrorMsg);
                     continue;
                 }
             } catch (Exception e) {
-                System.out.printf("%s, %s %s: ", config.getProperty("LBL001"), config.getProperty("LBL002"), stringInputErrorMsg);
+                System.out.printf("%s, %s %s: ", config.getLabel("LBL001"), config.getLabel("LBL002"), stringInputErrorMsg);
                 continue;
             }
             flag = false;
         }
         return Integer.parseInt(userInput);
-    }
-
-    public static void saveData(EventTicketConfig eventTicketConfig){
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        try (FileWriter file = new FileWriter("src/Resources/saveFile.json")) {
-            gson.toJson(eventTicketConfig, file);
-            System.out.println("Successfully saved the object as JSON to saveFile.json");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
 

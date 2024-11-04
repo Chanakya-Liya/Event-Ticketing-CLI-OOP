@@ -4,12 +4,18 @@ import java.util.Properties;
 
 public class ConfigReader {
 
-    private static final Properties properties = new Properties();
+    private static final Properties labels = new Properties();
+    private static final Properties config = new Properties();
 
-    static {
-        try (InputStream input = ConfigReader.class.getClassLoader().getResourceAsStream("Resources/config.properties")) {
+    static{
+        loadProperties(labels, "Resources/labels.properties");
+        loadProperties(config, "Resources/config.properties");
+    }
+
+    private static void loadProperties(Properties properties, String filePath){
+        try (InputStream input = ConfigReader.class.getClassLoader().getResourceAsStream(filePath)) {
             if (input == null) {
-                System.out.println("Sorry, unable to find config.properties");
+                System.out.println("Sorry, unable to find labels.properties");
             }
             // Load properties from file
             properties.load(input);
@@ -19,8 +25,12 @@ public class ConfigReader {
     }
 
     // Method to get properties by key
-    public String getProperty(String key) {
-        return properties.getProperty(key);
+    public String getLabel(String key) {
+        return labels.getProperty(key);
+    }
+
+    public String getConfig(String key) {
+        return config.getProperty(key);
     }
 
 }
